@@ -9,12 +9,12 @@ class Email extends BaseConfig
 	/**
 	 * @var string
 	 */
-	public $fromEmail = 'oriorasajambu@gmail.com';
+	public $fromEmail;
 
 	/**
 	 * @var string
 	 */
-	public $fromName = 'oriorasajambu';
+	public $fromName = "no-reply@putraecommerce.com";
 
 	/**
 	 * @var string
@@ -33,7 +33,7 @@ class Email extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $protocol = 'mail';
+	public $protocol = 'smtp';
 
 	/**
 	 * The server path to Sendmail.
@@ -47,40 +47,40 @@ class Email extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $SMTPHost;
+	public $SMTPHost = "smtp.googlemail.com";
 
 	/**
 	 * SMTP Username
 	 *
 	 * @var string
 	 */
-	public $SMTPUser;
+	public $SMTPUser = "manurungsamuel9802@gmail.com";
 
 	/**
 	 * SMTP Password
 	 *
 	 * @var string
 	 */
-	public $SMTPPass;
+	public $SMTPPass = "manajemeninformatika18";
 
 	/**
 	 * SMTP Port
 	 *
-	 * @var integer
+	 * @var int
 	 */
-	public $SMTPPort = 25;
+	public $SMTPPort = 465;
 
 	/**
 	 * SMTP Timeout (in seconds)
 	 *
-	 * @var integer
+	 * @var int
 	 */
-	public $SMTPTimeout = 5;
+	public $SMTPTimeout = 60;
 
 	/**
 	 * Enable persistent SMTP connections
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $SMTPKeepAlive = false;
 
@@ -89,19 +89,19 @@ class Email extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $SMTPCrypto = 'tls';
+	public $SMTPCrypto = 'ssl';
 
 	/**
 	 * Enable word-wrap
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $wordWrap = true;
 
 	/**
 	 * Character count to wrap at
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $wrapChars = 76;
 
@@ -110,7 +110,7 @@ class Email extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $mailType = 'text';
+	public $mailType = 'html';
 
 	/**
 	 * Character set (utf-8, iso-8859-1, etc.)
@@ -122,14 +122,14 @@ class Email extends BaseConfig
 	/**
 	 * Whether to validate the email address
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $validate = false;
 
 	/**
 	 * Email Priority. 1 = highest. 5 = lowest. 3 = normal
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $priority = 3;
 
@@ -150,21 +150,21 @@ class Email extends BaseConfig
 	/**
 	 * Enable BCC Batch Mode.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $BCCBatchMode = false;
 
 	/**
 	 * Number of emails in each BCC batch
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $BCCBatchSize = 200;
 
 	/**
 	 * Enable notify message from server
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $DSN = false;
 }

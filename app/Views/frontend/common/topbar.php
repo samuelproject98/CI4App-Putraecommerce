@@ -55,27 +55,27 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link" data-toggle="dropdown" href="#">
+                <a class="nav-link" <?php if (logged_in()) : ?> data-toggle="dropdown" href="#" <?php else : ?> href="<?= base_url('/login'); ?>" <?php endif; ?>>
                     <i class="fas fa-user"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <span class="dropdown-header">Account</span>
                     <div class="dropdown-divider"></div>
-                    <a href="/admin" class="dropdown-item">
-                        <i class="fas fa-sign-in-alt"></i> Admin
-                    </a>
-                    <a href="/login" class="dropdown-item">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </a>
-                    <a href="/profile" class="dropdown-item">
-                        <i class="fas fa-user"></i> Profile
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="/settings" class="dropdown-item">
-                        <i class="fas fa-cogs"></i> Settings
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="/logout" class="dropdown-item dropdown-footer">Logout</a>
+                    <?php if (logged_in()) : ?>
+                        <a href="<?= base_url('/profile'); ?>" class="dropdown-item">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <?php if (in_groups('admin')) : ?>
+                            <div class="dropdown-divider"></div>
+                            <a href="<?= base_url('/settings'); ?>" class="dropdown-item">
+                                <i class="fas fa-cogs"></i> Dashboard
+                            </a>
+                        <?php endif; ?>
+                        <div class="dropdown-divider"></div>
+                        <a href="<?= base_url('/logout'); ?>" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    <?php endif; ?>
                 </div>
             </li>
         </ul>
