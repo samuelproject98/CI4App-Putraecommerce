@@ -2,17 +2,19 @@
 
 namespace App\Controllers\Frontend;
 
-use App\Controllers\BaseController;
+use PDO;
+use App\Models\UsersModel;
 use App\Models\ProductsModel;
 use App\Models\MerchantsModel;
 use App\Models\CategoriesModel;
-use PDO;
+use App\Controllers\BaseController;
 
 class ProfileController extends BaseController
 {
 	public function __construct()
 	{
 		$this->db = \Config\Database::connect();
+		$this->users = new UsersModel();
 		$this->products = new ProductsModel();
 		$this->merchants = new MerchantsModel();
 		$this->categories = new CategoriesModel();
@@ -111,17 +113,23 @@ class ProfileController extends BaseController
 			return redirect()->to('/profile')->withInput();
 		}
 
+		$namaToko = $this->request->getVar('store_name');
+
+		if (!is_dir('assets/images/merchants/' . $namaToko)) {
+			mkdir('assets/images/merchants/' . $namaToko, 0777, TRUE);
+		}
+
 		$store_image = $this->request->getFile('store_image');
 		$store_image_name = $store_image->getRandomName();
-		$store_image->move('assets/images/merchants', $store_image_name);
+		$store_image->move('assets/images/merchants/' . $namaToko, $store_image_name);
 
 		$ktp_image = $this->request->getFile('ktp_image');
 		$ktp_image_name = $ktp_image->getRandomName();
-		$ktp_image->move('assets/images/merchants', $ktp_image_name);
+		$ktp_image->move('assets/images/merchants/' . $namaToko, $ktp_image_name);
 
 		$store_logo = $this->request->getFile('store_logo');
 		$store_logo_name = $store_logo->getRandomName();
-		$store_logo->move('assets/images/merchants', $store_logo_name);
+		$store_logo->move('assets/images/merchants/' . $namaToko, $store_logo_name);
 
 		$data = [
 			'user_id' => $this->request->getVar('user_id'),
@@ -139,6 +147,75 @@ class ProfileController extends BaseController
 
 		$this->merchants->save($data) ? session()->setFlashdata('success', 'Berhasil Mengirim Request Keanggotaan') :
 			session()->setFlashdata('fail', 'Gagal Mengirim Request Keanggotaan');
+		return redirect()->to('/profile');
+	}
+
+	public function edit()
+	{
+		if (!$this->validate([
+			'emailFields' => [
+				'rules' => 'required',
+				'errors' => [
+					'required' => 'Email harus diisi'
+				]
+			],
+			'namalengkapFields' => [
+				'rules' => 'required',
+				'errors' => [
+					'required' => 'Nama Lengkap harus diisi',
+				]
+			],
+			'genderOption' => [
+				'rules' => 'required',
+				'errors' => [
+					'required' => 'Jenis kelamin harus diisi'
+				]
+			],
+			'noteleponFields' => [
+				'rules' => 'required|numeric|min_length[8]|max_length[12]',
+				'errors' => [
+					'required' => 'No. Telepon harus diisi',
+					'is_unique' => 'No. Telepon telah digunakan',
+					'numeric' => 'No. Telepon harus menggunakan angka',
+					'min_length' => 'No. Telepon minimal 8 karakter',
+					'max_length' => 'No. Telepon maximal 12 karakter',
+				]
+			],
+			'profile_picture' => [
+				'rules' => 'uploaded[profile_picture]|max_size[profile_picture, 1024]|is_image[profile_picture]|mime_in[profile_picture,image/jpg,image/jpeg,image/png]',
+				'errors' => [
+					'uploaded' => 'File gambar belum dipilih',
+					'max_size' => 'Ukuran gambar max. 1 Mb',
+					'is_image' => 'File yang dipilih bukan gambar',
+					'mime_in' => 'File yang dipilih bukan gambar'
+				]
+			]
+		])) {
+			return redirect()->to('/profile')->withInput();
+		}
+
+
+		$user = $this->users->find($this->request->getVar('user_id'));
+
+		if ($user['profile_pic'] != "default-user.png") {
+			unlink('assets/images/' . $user['profile_pic']);
+		}
+
+		$fileProfile = $this->request->getFile('profile_picture');
+		$namaFile = $fileProfile->getRandomName();
+		$fileProfile->move('assets/images', $namaFile);
+
+		$dataUpdate = [
+			'id' => $this->request->getVar('user_id'),
+			'email' => $this->request->getVar('emailFields'),
+			'fullname' => $this->request->getVar('namalengkapFields'),
+			'user_gender' => $this->request->getVar('genderOption'),
+			'no_hp' => $this->request->getVar('noteleponFields'),
+			'profile_pic' => $namaFile,
+		];
+
+		$this->users->save($dataUpdate) ? session()->setFlashdata('success', 'Update profile berhasil') :
+			session()->setFlashdata('fail', 'Gagal mengupdate profile');
 		return redirect()->to('/profile');
 	}
 }

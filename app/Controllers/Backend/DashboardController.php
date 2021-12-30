@@ -15,12 +15,6 @@ class DashboardController extends BaseController
 
 	public function index()
 	{
-		$title = 'Dashboard';
-		$data = [
-			'meta_title'	=> $title . ' | Admin Panel',
-			'title'			=> $title,
-			'pages_slug' 	=> 'dashboard'
-		];
-		return view('backend/pages/dashboard', $data);
+		return view('backend/index');
 	}
 }

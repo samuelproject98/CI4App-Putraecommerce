@@ -62,12 +62,14 @@
                     <span class="dropdown-header">Account</span>
                     <div class="dropdown-divider"></div>
                     <?php if (logged_in()) : ?>
-                        <a href="<?= base_url('/profile'); ?>" class="dropdown-item">
-                            <i class="fas fa-user"></i> Profile
-                        </a>
+                        <?php if (in_groups('penjual') || in_groups('pembeli')) : ?>
+                            <a href="<?= base_url('/profile'); ?>" class="dropdown-item">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                        <?php endif; ?>
                         <?php if (in_groups('admin')) : ?>
                             <div class="dropdown-divider"></div>
-                            <a href="<?= base_url('/settings'); ?>" class="dropdown-item">
+                            <a href="<?= base_url('/admin'); ?>" class="dropdown-item">
                                 <i class="fas fa-cogs"></i> Dashboard
                             </a>
                         <?php endif; ?>

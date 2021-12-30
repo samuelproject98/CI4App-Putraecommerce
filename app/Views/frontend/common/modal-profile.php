@@ -1,4 +1,4 @@
-<div class="modal fade" id="edit">
+<div class="modal fade show" id="editProfile">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -7,36 +7,81 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="form-horizontal px-3" action="/profile/edit" method="POST">
+            <form class="form-horizontal px-3" action="/profile/edit" method="POST" enctype="multipart/form-data">
+                <?= csrf_field(); ?>
                 <div class="modal-body">
+                    <?= form_hidden('user_id', user_id());; ?>
                     <div class="form-group row">
                         <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                            <input type="email" class="form-control <?= $validation->hasError('emailFields') ? 'is-invalid' : ''; ?>" placeholder="Masukkan email anda" id="emailFields" name="emailFields" value="<?= old('emailFields') ? old('emailFields') : user()->email; ?>">
+                            <div class="invalid-feedback">
+                                <?= $validation->getError('emailFields'); ?>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword3" class="col-sm-2 col-form-label">Nama Lengkap</label>
+                        <label for="namalengkapFields" class="col-sm-2 col-form-label">Nama Lengkap</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                            <input type="text" class="form-control <?= $validation->hasError('namalengkapFields') ? 'is-invalid' : ''; ?>" placeholder="Masukkan nama lengkap" id="namalengkapFields" name="namalengkapFields" value="<?= old('namalengkapFields') ? old('namalengkapFields') : user()->fullname; ?>">
+                            <div class="invalid-feedback">
+                                <?= $validation->getError('namalengkapFields'); ?>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword3" class="col-sm-2 col-form-label">Jenis Kelamin</label>
+                        <label for="genderOption" class="col-sm-2 col-form-label">Jenis Kelamin</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                            <select class="form-control <?= $validation->hasError('genderOption') ? 'is-invalid' : ''; ?>" aria-label="Default select example" id="genderOption" name="genderOption">
+                                <?php if (user()->user_gender) : ?>
+                                    <option value="">Pilih Jenis Kelamin...</option>
+                                    <option value="male" <?= user()->user_gender == "male" ? "selected" : ""; ?>>Pria</option>
+                                    <option value="female" <?= user()->user_gender == "female" ? "selected" : ""; ?>>Wanita</option>
+                                <?php else : ?>
+                                    <?php if (old('genderOption')) : ?>
+                                        <option value="">Pilih Jenis Kelamin...</option>
+                                        <option value="male" <?= old('genderOption') == "male" ? "selected" : ""; ?>>Pria</option>
+                                        <option value="female" <?= old('genderOption') == "female" ? "selected" : ""; ?>>Wanita</option>
+                                    <?php else : ?>
+                                        <option value="" selected>Pilih Jenis Kelamin...</option>
+                                        <option value="male">Pria</option>
+                                        <option value="female">Wanita</option>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </select>
+                            <div class="invalid-feedback">
+                                <?= $validation->getError('genderOption'); ?>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword3" class="col-sm-2 col-form-label">No. Telepon</label>
+                        <label for="noteleponFields" class="col-sm-2 col-form-label">No. Telepon</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                            <input type="number" class="form-control <?= $validation->hasError('noteleponFields') ? 'is-invalid' : ''; ?>" placeholder="Masukkan No Telepon anda" id="noteleponFields" name="noteleponFields" value="<?= old('noteleponFields') ? old('noteleponFields') : user()->no_hp; ?>">
+                            <div class="invalid-feedback">
+                                <?= $validation->getError('noteleponFields'); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="store_logo" class="col-sm-2 col-form-label">Foto Profil</label>
+                        <div class="col-sm-10">
+                            <div class="custom-file">
+                                <input name="profile_picture" type="file" class="custom-file-input <?= $validation->hasError('profile_picture') ? 'is-invalid' : ''; ?>" id="profile_picture" onchange="profileImage();">
+                                <div class="invalid-feedback">
+                                    <?= $validation->getError('profile_picture'); ?>
+                                </div>
+                                <label class="custom-file-label" for="profile_picture"><?= user()->profile_pic == 'default-user.png' ? 'Pilih Gambar...' : user()->profile_pic; ?></label>
+                            </div>
+                            <div class="col-sm-2 p-0 mt-3">
+                                <img src="assets/images/<?= user()->profile_pic; ?>" alt="" class="img-thumbnail img-profile-preview">
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button name="edit" value="edit" type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
         </div>
@@ -55,7 +100,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="/profile" class="form-horizontal" method="POST" enctype="multipart/form-data">
+            <form action="/profile/upgrade" class="form-horizontal" method="POST" enctype="multipart/form-data">
                 <?= csrf_field(); ?>
                 <div class="modal-body">
                     <div class="card card-primary">
@@ -68,7 +113,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Nama Lengkap</label>
-                                        <input name="merchant_fullname" type="text" class="form-control <?= $validation->hasError('merchant_fullname') ? 'is-invalid' : ''; ?>" placeholder="Nama Lengkap" value="<?= old('merchant_fullname'); ?>">
+                                        <input name="merchant_fullname" type="text" class="form-control <?= $validation->hasError('merchant_fullname') ? 'is-invalid' : ''; ?>" placeholder="Nama Lengkap" value="<?= old('merchant_fullname') ? old('merchant_fullname') : user()->fullname; ?>">
                                         <div class="invalid-feedback">
                                             <?= $validation->getError('merchant_fullname'); ?>
                                         </div>
@@ -77,7 +122,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input name="merchant_email" type="email" class="form-control <?= $validation->hasError('merchant_email') ? 'is-invalid' : ''; ?>" placeholder="Email" value="<?= old('merchant_email'); ?>">
+                                        <input name="merchant_email" type="email" class="form-control <?= $validation->hasError('merchant_email') ? 'is-invalid' : ''; ?>" placeholder="Email" value="<?= old('merchant_email') ? old('merchant_email') : user()->email; ?>">
                                         <div class="invalid-feedback">
                                             <?= $validation->getError('merchant_email'); ?>
                                         </div>
@@ -90,28 +135,46 @@
                                     <div class="form-group">
                                         <label>Jenis Kelamin</label>
                                         <div class="row">
-                                            <div class="col-6">
-                                                <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input <?= $validation->hasError('merchant_gender') ? 'is-invalid' : ''; ?>" type="radio" id="male" name="merchant_gender" value="male" <?= old('merchant_gender') == 'male' ? 'checked=true' : ''; ?>>
-                                                    <label for="male" class="custom-control-label">Pria</label>
-                                                    <div class="invalid-feedback">
-                                                        <?= $validation->getError('merchant_gender'); ?>
+                                            <?php if (old('merchant_gender')) : ?>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input <?= $validation->hasError('merchant_gender') ? 'is-invalid' : ''; ?>" type="radio" id="male" name="merchant_gender" value="male" <?= old('merchant_gender') == 'male' ? 'checked=true' : ''; ?>>
+                                                        <label for="male" class="custom-control-label">Pria</label>
+                                                        <div class="invalid-feedback">
+                                                            <?= $validation->getError('merchant_gender'); ?>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input <?= $validation->hasError('merchant_gender') ? 'is-invalid' : ''; ?>" type="radio" id="female" name="merchant_gender" value="female" <?= old('merchant_gender') == 'female' ? 'checked=true' : ''; ?>>
-                                                    <label for="female" class="custom-control-label">Wanita</label>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input <?= $validation->hasError('merchant_gender') ? 'is-invalid' : ''; ?>" type="radio" id="female" name="merchant_gender" value="female" <?= old('merchant_gender') == 'female' ? 'checked=true' : ''; ?>>
+                                                        <label for="female" class="custom-control-label">Wanita</label>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            <?php else : ?>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input <?= $validation->hasError('merchant_gender') ? 'is-invalid' : ''; ?>" type="radio" id="male" name="merchant_gender" value="male" <?= user()->user_gender == 'male' ? 'checked=true' : ''; ?>>
+                                                        <label for="male" class="custom-control-label">Pria</label>
+                                                        <div class="invalid-feedback">
+                                                            <?= $validation->getError('merchant_gender'); ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input <?= $validation->hasError('merchant_gender') ? 'is-invalid' : ''; ?>" type="radio" id="female" name="merchant_gender" value="female" <?= user()->user_gender  == 'female' ? 'checked=true' : ''; ?>>
+                                                        <label for="female" class="custom-control-label">Wanita</label>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>No. Telepon</label>
-                                        <input name="merchant_phone" type="text" class="form-control <?= $validation->hasError('merchant_phone') ? 'is-invalid' : ''; ?>" placeholder="No. Telepon" value="<?= old('merchant_phone'); ?>">
+                                        <input name="merchant_phone" type="text" class="form-control <?= $validation->hasError('merchant_phone') ? 'is-invalid' : ''; ?>" placeholder="No. Telepon" value="<?= old('merchant_phone') ? old('merchant_phone') : user()->no_hp; ?>">
                                         <div class="invalid-feedback">
                                             <?= $validation->getError('merchant_phone'); ?>
                                         </div>
@@ -151,11 +214,11 @@
                                 <label for="store_image" class="col-sm-2 col-form-label">Gambar Toko</label>
                                 <div class="col-sm-10">
                                     <div class="custom-file">
-                                        <input name="store_image" type="file" class="custom-file-input <?= $validation->hasError('store_image') ? 'is-invalid' : ''; ?>" id=" store_image">
+                                        <input name="store_image" type="file" class="custom-file-input <?= $validation->hasError('store_image') ? 'is-invalid' : ''; ?>" id="store_image" onchange="storeImage();">
                                         <div class="invalid-feedback">
                                             <?= $validation->getError('store_image'); ?>
                                         </div>
-                                        <label class="custom-file-label" for="store_image">Choose file</label>
+                                        <label class="custom-file-label store-image" for="store_image">Choose file</label>
                                     </div>
                                 </div>
                             </div>
@@ -164,11 +227,11 @@
                                 <label for="ktp_image" class="col-sm-2 col-form-label">KTP</label>
                                 <div class="col-sm-10">
                                     <div class="custom-file">
-                                        <input name="ktp_image" type="file" class="custom-file-input <?= $validation->hasError('ktp_image') ? 'is-invalid' : ''; ?>" id="ktp_image">
+                                        <input name="ktp_image" type="file" class="custom-file-input <?= $validation->hasError('ktp_image') ? 'is-invalid' : ''; ?>" id="ktp_image" onchange="ktpImage();">
                                         <div class="invalid-feedback">
                                             <?= $validation->getError('ktp_image'); ?>
                                         </div>
-                                        <label class="custom-file-label" for="ktp_image">Choose file</label>
+                                        <label class="custom-file-label ktp-image" for="ktp_image">Choose file</label>
                                     </div>
                                 </div>
                             </div>
@@ -177,11 +240,11 @@
                                 <label for="store_logo" class="col-sm-2 col-form-label">Logo Toko</label>
                                 <div class="col-sm-10">
                                     <div class="custom-file">
-                                        <input name="store_logo" type="file" class="custom-file-input <?= $validation->hasError('store_logo') ? 'is-invalid' : ''; ?>" id="store_logo">
+                                        <input name="store_logo" type="file" class="custom-file-input <?= $validation->hasError('store_logo') ? 'is-invalid' : ''; ?>" id="store_logo" onchange="storeLogo();">
                                         <div class="invalid-feedback">
                                             <?= $validation->getError('store_logo'); ?>
                                         </div>
-                                        <label class="custom-file-label" for="store_logo">Choose file</label>
+                                        <label class="custom-file-label store-logo" for="store_logo">Choose file</label>
                                     </div>
                                 </div>
                             </div>
@@ -231,13 +294,14 @@
                                     <!-- select -->
                                     <div class="form-group">
                                         <label>Kategori</label>
-                                        <select name="category_id" class="custom-select">
+                                        <select name="category_id" class="custom-select <?= $validation->hasError('category_id') ? 'is-invalid' : ''; ?>">
+                                            <option value="">Pilih Kategori...</option>
                                             <?php foreach ($categories as $category) : ?>
                                                 <option value="<?= $category['id']; ?>"><?= $category['category_name']; ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                         <div class="invalid-feedback">
-                                            <?= $validation->getError('merchant_email'); ?>
+                                            <?= $validation->getError('category_id'); ?>
                                         </div>
                                     </div>
                                 </div>

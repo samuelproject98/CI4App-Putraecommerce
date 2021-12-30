@@ -37,23 +37,23 @@ $routes->post('/', 'HomeController::search');
 $routes->group('admin', ['namespace' => 'App\Controllers\Backend'], function ($routes) {
 	$routes->get('/', 'DashboardController::index', ['filter' => 'role:admin,penjual']);
 
-	$routes->get('categories', 'CategoriesController::index', ['filter' => 'role:admin']);
-	$routes->post('categories', 'CategoriesController::addCategory', ['filter' => 'role:admin']);
-	$routes->put('categories/(:num)', 'CategoriesController::updateCategory/$1', ['filter' => 'role:admin']);
-	$routes->delete('categories/(:num)', 'CategoriesController::deleteCategory/$1', ['filter' => 'role:admin']);
+	// $routes->get('categories', 'CategoriesController::index', ['filter' => 'role:admin']);
+	// $routes->post('categories', 'CategoriesController::addCategory', ['filter' => 'role:admin']);
+	// $routes->put('categories/(:num)', 'CategoriesController::updateCategory/$1', ['filter' => 'role:admin']);
+	// $routes->delete('categories/(:num)', 'CategoriesController::deleteCategory/$1', ['filter' => 'role:admin']);
 
-	$routes->get('users', 'ProfileController::index', ['filter' => 'role:admin,penjual']);
-	$routes->delete('users/(:num)/(:num)', 'ProfileController::deleteuser/$1/$2', ['filter' => 'role:admin,penjual']);
-	$routes->put('users/(:num)/(:num)', 'ProfileController::verifikasi/$1/$2', ['filter' => 'role:admin,penjual']);
+	// $routes->get('users', 'ProfileController::index', ['filter' => 'role:admin,penjual']);
+	// $routes->delete('users/(:num)/(:num)', 'ProfileController::deleteuser/$1/$2', ['filter' => 'role:admin,penjual']);
+	// $routes->put('users/(:num)/(:num)', 'ProfileController::verifikasi/$1/$2', ['filter' => 'role:admin,penjual']);
 });
 
-$routes->group('produk', ['namespace' => 'App\Controllers\Backend'], function ($routes) {
-	$routes->get('/', 'ProductController::index', ['filter' => 'role:pembeli,penjual,admin']);
-	$routes->get('(:num)', 'ProdukController::detail/$1', ['filter' => 'role:pembeli,penjual,admin']);
-	$routes->post('add', 'ProdukController::add', ['filter' => 'role:pembeli,penjual,admin']);
-});
+// $routes->group('produk', ['namespace' => 'App\Controllers\Backend'], function ($routes) {
+// 	$routes->get('/', 'ProductController::index', ['filter' => 'role:pembeli,penjual,admin']);
+// 	$routes->get('(:num)', 'ProdukController::detail/$1', ['filter' => 'role:pembeli,penjual,admin']);
+// 	$routes->post('add', 'ProdukController::add', ['filter' => 'role:pembeli,penjual,admin']);
+// });
 
-$routes->group('product', ['namespace' => 'App\Controllers\Frontend'], function ($routes) {
+$routes->group('produk', ['namespace' => 'App\Controllers\Frontend'], function ($routes) {
 	$routes->get('/', 'ProductController::index', ['filter' => 'role:pembeli,penjual,admin']);
 	$routes->get('(:any)', 'ProductController::detail/$1', ['filter' => 'role:pembeli,penjual,admin']);
 	$routes->post('add', 'ProductController::add', ['filter' => 'role:pembeli,penjual,admin']);
@@ -66,7 +66,8 @@ $routes->group('category', ['namespace' => 'App\Controllers\Frontend'], function
 
 $routes->group('profile', ['namespace' => 'App\Controllers\Frontend'], function ($routes) {
 	$routes->get('/', 'ProfileController::index', ['filter' => 'role:pembeli,penjual']);
-	$routes->post('/', 'ProfileController::upgrade', ['filter' => 'role:pembeli,penjual']);
+	$routes->post('edit', 'ProfileController::edit', ['filter' => 'role:pembeli,penjual']);
+	$routes->post('upgrade', 'ProfileController::upgrade', ['filter' => 'role:pembeli,penjual']);
 	$routes->get('(:any)', 'ProfileController::profile/$1', ['filter' => 'role:pembeli,penjual']);
 });
 

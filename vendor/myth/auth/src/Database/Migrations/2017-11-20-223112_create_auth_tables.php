@@ -21,7 +21,7 @@ class CreateAuthTables extends Migration
                 'null' => true,
             ],
             'no_hp'         => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
-            'profile_pic'      => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
+            'profile_pic'         => ['type' => 'varchar', 'constraint' => 255, 'default' => 'default-user.png'],
             'password_hash'    => ['type' => 'varchar', 'constraint' => 255],
             'reset_hash'       => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
             'reset_at'         => ['type' => 'datetime', 'null' => true],
